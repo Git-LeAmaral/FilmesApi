@@ -25,7 +25,8 @@ public class SessaoController : ControllerBase
         Sessao sessao = _mapper.Map<Sessao>(sessaoDto);
         _context.Sessoes.Add(sessao);
         _context.SaveChanges();
-        return CreatedAtAction(nameof(RecuperaSessaoPorId), new { id = sessao.Id }, sessaoDto);
+        return CreatedAtAction(nameof(RecuperaSessaoPorId), new 
+            { filmeId = sessao.FilmeId, cinemaId = sessao.CinemaId }, sessao);
     }
 
     [HttpGet]
@@ -35,10 +36,12 @@ public class SessaoController : ControllerBase
         return listaDeSessao;
     }
 
-    [HttpGet("{id}")]
-    public IActionResult RecuperaSessaoPorId(int id)
+    [HttpGet("{filmeId}/{cinemaId}")]
+    public IActionResult RecuperaSessaoPorId(int filmeId, int cinemaId)
     {
-        Sessao sessao = _context.Sessoes.FirstOrDefault(sessao => sessao.Id == id);
+        Sessao sessao = _context.Sessoes.FirstOrDefault(sessao => 
+            sessao.FilmeId == filmeId && sessao.CinemaId == cinemaId);
+
         if (sessao != null)
         {
             ReadSessaoDto sessaoDto = _mapper.Map<ReadSessaoDto>(sessao);
@@ -48,9 +51,9 @@ public class SessaoController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public IActionResult AtualizaSessao(int id, [FromBody] UpdateSessaoDto sessaoDto)
+    public IActionResult AtualizaSessao(int filmeId, [FromBody] UpdateSessaoDto sessaoDto)
     {
-        Sessao sessao = _context.Sessoes.FirstOrDefault(sessao => sessao.Id == id);
+        Sessao sessao = _context.Sessoes.FirstOrDefault(sessao => sessao.FilmeId == filmeId);
         if (sessaoDto == null)
         {
             return NotFound();
@@ -61,9 +64,9 @@ public class SessaoController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public IActionResult DeletaSessao(int id)
+    public IActionResult DeletaSessao(int filmeId)
     {
-        Sessao sessao = _context.Sessoes.FirstOrDefault(sessao => sessao.Id == id);
+        Sessao sessao = _context.Sessoes.FirstOrDefault(sessao => sessao.FilmeId == filmeId);
         if (sessao == null)
         {
             return NotFound();
